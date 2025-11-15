@@ -36,3 +36,14 @@ yarn-error.log*
 next-env.d.ts
 
 .env
+
+# Temporary documentation
+*_SUMMARY.md
+*_CHECKLIST.md
+*_GUIDE.md
+*_COMPLETE.md
+ENVIRONMENT_*.md
+ENV_*.md
+INTEGRATION_*.md
+SETUP_*.md
+VERIFIERS_*.md
