@@ -1,0 +1,15 @@
+{
+  "network": "baseSepolia",
+  "chainId": "84532",
+  "deployer": "0xbCC20289c1E438b14C823Be0963e563456B643c2",
+  "timestamp": "2025-11-15T22:18:28.819Z",
+  "contracts": {
+    "verifiers": {
+      "shuffle": "0xe97E4f5E68Fd12B27F91255F060Ff358619A9cc1",
+      "deal": "0x17A7a7905C08Efe28e4f76cB2f77B03e5872C63e",
+      "draw": "0x8800495A85B448A0187DFF129C98794054B1Cb9F",
+      "play": "0x50861617ab2F82A5dE6Bcf987630c6758A838895"
+    },
+    "game": "0xF4A568972C787c81eC1Aa0F90aE2B570210942a4"
+  }
+}
