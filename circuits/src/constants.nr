@@ -1,7 +1,5 @@
 // Game constants for ZK UNO
 
-use crate::types::{DECK_SIZE, MERKLE_DEPTH};
-
 /// Total number of each card type in standard UNO deck
 /// - Each color (Red, Green, Blue, Yellow) has:
 ///   - One 0
@@ -11,38 +9,38 @@ use crate::types::{DECK_SIZE, MERKLE_DEPTH};
 ///   - Four Wild
 ///   - Four Wild Draw Four
 
-global CARDS_PER_COLOR: u32 = 25;
-global WILD_CARD_COUNT: u32 = 8;
+pub global CARDS_PER_COLOR: u32 = 25;
+pub global WILD_CARD_COUNT: u32 = 8;
 
 /// Color codes
-global COLOR_WILD: u8 = 0;
-global COLOR_RED: u8 = 1;
-global COLOR_GREEN: u8 = 2;
-global COLOR_BLUE: u8 = 3;
-global COLOR_YELLOW: u8 = 4;
+pub global COLOR_WILD: u8 = 0;
+pub global COLOR_RED: u8 = 1;
+pub global COLOR_GREEN: u8 = 2;
+pub global COLOR_BLUE: u8 = 3;
+pub global COLOR_YELLOW: u8 = 4;
 
 /// Card type codes
-global TYPE_ZERO: u8 = 0;
-global TYPE_SKIP: u8 = 10;
-global TYPE_REVERSE: u8 = 11;
-global TYPE_DRAW_TWO: u8 = 12;
-global TYPE_WILD: u8 = 13;
-global TYPE_WILD_DRAW_FOUR: u8 = 14;
+pub global TYPE_ZERO: u8 = 0;
+pub global TYPE_SKIP: u8 = 10;
+pub global TYPE_REVERSE: u8 = 11;
+pub global TYPE_DRAW_TWO: u8 = 12;
+pub global TYPE_WILD: u8 = 13;
+pub global TYPE_WILD_DRAW_FOUR: u8 = 14;
 
 /// Field arithmetic constants
-global FIELD_OFFSET: Field = 100;  // Offset for product calculations to avoid zero
+pub global FIELD_OFFSET: Field = 100;  // Offset for product calculations to avoid zero
 
 /// Bitset compression chunk size
-global BITSET_CHUNK_SIZE: u32 = 16;
+pub global BITSET_CHUNK_SIZE: u32 = 16;
 
 /// Maximum players in a game
-global MAX_PLAYERS: u32 = 6;
+pub global MAX_PLAYERS: u32 = 6;
 
 /// Poseidon domain separation tags
-global DOMAIN_CARD_UID: Field = 1;
-global DOMAIN_CARD_COMMITMENT: Field = 2;
-global DOMAIN_MERKLE_NODE: Field = 3;
-global DOMAIN_BITSET_COMPRESS: Field = 4;
+pub global DOMAIN_CARD_UID: Field = 1;
+pub global DOMAIN_CARD_COMMITMENT: Field = 2;
+pub global DOMAIN_MERKLE_NODE: Field = 3;
+pub global DOMAIN_BITSET_COMPRESS: Field = 4;
 
 /// Standard UNO deck composition (for reference and testing)
 /// Returns the count of each card type for a given color
