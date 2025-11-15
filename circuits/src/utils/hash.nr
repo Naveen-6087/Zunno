@@ -3,7 +3,7 @@
 use crate::constants::{DOMAIN_CARD_UID, DOMAIN_CARD_COMMITMENT, DOMAIN_MERKLE_NODE, DOMAIN_BITSET_COMPRESS};
 
 /// Hash a card to generate unique identifier
-/// card_uid = Poseidon(domain || color || type || copy_index)
+/// card_uid = Pedersen(domain || color || type || copy_index)
 pub fn hash_card_uid(color: u8, card_type: u8, copy_index: u8) -> Field {
     let inputs = [
         DOMAIN_CARD_UID,
@@ -11,22 +11,22 @@ pub fn hash_card_uid(color: u8, card_type: u8, copy_index: u8) -> Field {
         card_type as Field,
         copy_index as Field
     ];
-    std::hash::poseidon::bn254::hash_4(inputs)
+    std::hash::pedersen_hash(inputs)
 }
 
 /// Create card commitment (leaf)
-/// commitment = Poseidon(domain || card_uid || nonce)
+/// commitment = Pedersen(domain || card_uid || nonce)
 pub fn hash_card_commitment(card_uid: Field, nonce: Field) -> Field {
-    std::hash::poseidon::bn254::hash_3([DOMAIN_CARD_COMMITMENT, card_uid, nonce])
+    std::hash::pedersen_hash([DOMAIN_CARD_COMMITMENT, card_uid, nonce])
 }
 
 /// Hash two Merkle tree nodes
-/// node = Poseidon(domain || left || right)
+/// node = Pedersen(domain || left || right)
 pub fn hash_merkle_node(left: Field, right: Field) -> Field {
-    std::hash::poseidon::bn254::hash_3([DOMAIN_MERKLE_NODE, left, right])
+    std::hash::pedersen_hash([DOMAIN_MERKLE_NODE, left, right])
 }
 
-/// Compress a bitset chunk using Poseidon
+/// Compress a bitset chunk using Pedersen
 /// Used for bitset state commitments
 pub fn hash_bitset_chunk(bits: [u1; 16]) -> Field {
     // Convert bits to Fields and hash
@@ -37,14 +37,8 @@ pub fn hash_bitset_chunk(bits: [u1; 16]) -> Field {
         fields[i + 1] = bits[i] as Field;
     }
     
-    // Use Poseidon with appropriate input size
-    std::hash::poseidon::bn254::hash_8([
-        fields[0], fields[1], fields[2], fields[3],
-        fields[4], fields[5], fields[6], fields[7]
-    ]) + std::hash::poseidon::bn254::hash_8([
-        fields[8], fields[9], fields[10], fields[11],
-        fields[12], fields[13], fields[14], fields[15]
-    ]) + fields[16] as Field
+    // Use Pedersen hash for all fields
+    std::hash::pedersen_hash(fields)
 }
 
 /// Iteratively compress a full bitset
@@ -58,36 +52,36 @@ pub fn compress_bitset<let N: u32>(bits: [u1; N]) -> Field {
         for i in 0..N {
             chunk[i] = bits[i];
         }
-        return hash_bitset_chunk(chunk);
-    }
-    
-    // For larger bitsets, recursively hash chunks
-    let chunk_count = (N + 15) / 16;  // Ceiling division
-    let mut chunk_hashes: [Field; 7] = [0; 7];  // Max 7 chunks for 108 bits
-    
-    for chunk_idx in 0..chunk_count {
-        let start = chunk_idx * 16;
-        let end = if start + 16 < N { start + 16 } else { N };
+        hash_bitset_chunk(chunk)
+    } else {
+        // For larger bitsets, recursively hash chunks
+        let chunk_count = (N + 15) / 16;  // Ceiling division
+        let mut chunk_hashes: [Field; 7] = [0; 7];  // Max 7 chunks for 108 bits
         
-        let mut chunk: [u1; 16] = [0; 16];
-        for i in 0..(end - start) {
-            chunk[i] = bits[start + i];
+        for chunk_idx in 0..chunk_count {
+            let start = chunk_idx * 16;
+            let end = if start + 16 < N { start + 16 } else { N };
+            
+            let mut chunk: [u1; 16] = [0; 16];
+            for i in 0..(end - start) {
+                chunk[i] = bits[start + i];
+            }
+            
+            if chunk_idx < 7 {
+                chunk_hashes[chunk_idx] = hash_bitset_chunk(chunk);
+            }
         }
         
-        if chunk_idx < 7 {
-            chunk_hashes[chunk_idx] = hash_bitset_chunk(chunk);
+        // Hash all chunk hashes together
+        let mut result = chunk_hashes[0];
+        for i in 1..chunk_count {
+            if i < 7 {
+                result = hash_merkle_node(result, chunk_hashes[i]);
+            }
         }
+        
+        result
     }
-    
-    // Hash all chunk hashes together
-    let mut result = chunk_hashes[0];
-    for i in 1..chunk_count {
-        if i < 7 {
-            result = hash_merkle_node(result, chunk_hashes[i]);
-        }
-    }
-    
-    result
 }
 
 /// Aggregate sum of field elements
