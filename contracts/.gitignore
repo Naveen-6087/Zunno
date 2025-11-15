@@ -1,0 +1,42 @@
+# Hardhat files
+cache/
+artifacts/
+node_modules/
+
+# TypeChain
+typechain/
+typechain-types/
+
+# Coverage
+coverage/
+coverage.json
+
+# Deployment
+deployments/*.local.json
+
+# Environment
+.env
+.env.local
+
+# Verifier contracts (generated)
+contracts/verifiers/*.sol
+
+# Verification keys
+*.vk
+*.vk.json
+
+# Proofs
+*.proof
+proofs/
+
+# Log files
+*.log
+npm-debug.log*
+
+# Editor directories
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
